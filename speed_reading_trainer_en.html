@@ -1,0 +1,1477 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тренажер чтения</title>
+
+<style>
+:root{
+  --bg:#0d1020;
+  --panel:rgba(255,255,255,.08);
+  --panel2:rgba(255,255,255,.12);
+  --text:#f7f8ff;
+  --muted:#a8aec7;
+  --primary:#7c6cff;
+  --green:#37d5bd;
+  --danger:#ff6b81;
+  --line:rgba(255,255,255,.12);
+  --radius:22px;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  padding:18px;
+  min-height:100vh;
+  font-family:Arial, sans-serif;
+  color:var(--text);
+  background:
+    radial-gradient(circle at 15% 10%,rgba(124,108,255,.25),transparent 30%),
+    radial-gradient(circle at 85% 15%,rgba(55,213,189,.16),transparent 30%),
+    var(--bg);
+}
+
+button,input{font:inherit}
+
+.app{
+  max-width:1050px;
+  margin:auto;
+}
+
+header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
+}
+
+.logo{
+  width:48px;
+  height:48px;
+  display:grid;
+  place-items:center;
+  border-radius:15px;
+  background:linear-gradient(135deg,var(--primary),var(--green));
+  font-weight:900;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+h1,h2,h3,p{margin-top:0}
+
+.subtitle{
+  color:var(--muted);
+  font-size:14px;
+}
+
+.panel{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:28px;
+  backdrop-filter:blur(15px);
+}
+
+.screen-page{
+  min-height:650px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.content{
+  width:min(720px,100%);
+  margin:auto;
+}
+
+.center{text-align:center}
+
+.big-icon{
+  font-size:65px;
+  margin-bottom:15px;
+}
+
+label{
+  display:block;
+  color:var(--muted);
+  font-weight:bold;
+  margin-bottom:8px;
+}
+
+.age-buttons{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+  margin:20px 0;
+}
+
+.btn{
+  border:0;
+  border-radius:15px;
+  padding:14px 18px;
+  cursor:pointer;
+  font-weight:800;
+  color:white;
+  transition:.18s;
+}
+
+.btn:hover{
+  transform:translateY(-2px);
+}
+
+.btn:disabled{
+  opacity:.45;
+  cursor:not-allowed;
+  transform:none;
+}
+
+.primary{
+  background:linear-gradient(135deg,var(--primary),#9b70ff);
+}
+
+.secondary{
+  background:var(--panel2);
+  color:var(--text);
+  border:1px solid var(--line);
+}
+
+.green{
+  background:linear-gradient(135deg,#20b99f,var(--green));
+}
+
+.danger{
+  background:rgba(255,107,129,.18);
+  border:1px solid rgba(255,107,129,.3);
+}
+
+.menu{
+  display:grid;
+  gap:15px;
+  margin-top:25px;
+}
+
+.menu .btn{
+  padding:20px;
+  font-size:18px;
+}
+
+.info{
+  padding:15px;
+  border-radius:14px;
+  background:rgba(255,255,255,.05);
+  margin:15px 0;
+}
+
+.muted{color:var(--muted)}
+
+.levels{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:15px;
+  margin-top:25px;
+}
+
+.level{
+  padding:25px 15px;
+  text-align:center;
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:rgba(255,255,255,.05);
+  cursor:pointer;
+  color:white;
+}
+
+.level:hover{
+  border-color:var(--primary);
+}
+
+.text-box{
+  font-size:21px;
+  line-height:1.7;
+  padding:25px;
+  border-radius:18px;
+  background:rgba(0,0,0,.18);
+  margin:20px 0;
+}
+
+.question{
+  padding:20px;
+  border-radius:18px;
+  background:rgba(255,255,255,.05);
+  margin-bottom:18px;
+}
+
+.answers{
+  display:grid;
+  gap:10px;
+  margin-top:15px;
+}
+
+.answer{
+  padding:14px;
+  text-align:left;
+  border-radius:12px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.06);
+  color:white;
+  cursor:pointer;
+}
+
+.answer.selected{
+  border-color:var(--primary);
+  background:rgba(124,108,255,.25);
+}
+
+.result{
+  text-align:center;
+}
+
+.result-number{
+  font-size:45px;
+  font-weight:900;
+  margin:10px 0 25px;
+}
+
+.stat-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+  margin:20px 0;
+}
+
+.stat{
+  padding:20px;
+  border-radius:16px;
+  background:rgba(255,255,255,.06);
+}
+
+.stat strong{
+  display:block;
+  font-size:27px;
+  margin-top:5px;
+}
+
+.history{
+  margin-top:25px;
+}
+
+.history-row{
+  display:grid;
+  grid-template-columns:70px 1fr 1fr;
+  gap:10px;
+  padding:14px;
+  border-bottom:1px solid var(--line);
+}
+
+.reader-screen{
+  min-height:360px;
+  display:grid;
+  place-items:center;
+  background:#080a13;
+  border-radius:20px;
+  margin:20px 0;
+  position:relative;
+  overflow:hidden;
+}
+
+.reader-screen:before{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  top:50%;
+  height:1px;
+  background:rgba(255,255,255,.1);
+}
+
+.word{
+  position:relative;
+  z-index:2;
+  font-size:clamp(45px,10vw,100px);
+  font-weight:900;
+  text-align:center;
+  max-width:90%;
+}
+
+.reader-controls{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.progress{
+  height:10px;
+  border-radius:99px;
+  overflow:hidden;
+  background:rgba(255,255,255,.08);
+}
+
+.progress-fill{
+  height:100%;
+  width:0;
+  background:linear-gradient(90deg,var(--primary),var(--green));
+}
+
+.stats-line{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  color:var(--muted);
+}
+
+.badge{
+  display:inline-block;
+  padding:8px 12px;
+  border-radius:99px;
+  background:rgba(255,255,255,.07);
+  color:var(--muted);
+  font-size:13px;
+}
+
+.back{
+  margin-bottom:15px;
+}
+
+@media(max-width:700px){
+  body{padding:10px}
+  .panel{padding:20px}
+  .age-buttons,.levels,.stat-grid{
+    grid-template-columns:1fr;
+  }
+  .history-row{
+    grid-template-columns:1fr;
+  }
+  header{
+    align-items:flex-start;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<header>
+  <div class="brand">
+    <div class="logo">SR</div>
+    <div>
+      <h1>Тренажер чтения</h1>
+      <div class="subtitle">Скорость + понимание текста</div>
+    </div>
+  </div>
+</header>
+
+<div id="app"></div>
+
+</div>
+
+<script>
+
+/* =========================================================
+   DATA
+========================================================= */
+
+const texts = {
+
+  1:[
+    {
+      id:"L1-01",
+      title:"Утро в парке",
+      text:"Утром Маша пошла в парк вместе с мамой. На дорожке они увидели маленькую белку. Белка быстро забежала на дерево и спряталась за веткой. Маша достала из рюкзака яблоко, но белка не вышла. Тогда девочка положила яблоко возле дерева и отошла.",
+      questions:[
+        ["Куда Маша пошла утром?",["В школу","В парк","В магазин","На пляж"],1],
+        ["Кого увидели Маша и мама?",["Зайца","Птицу","Белку","Кошку"],2],
+        ["Куда спряталась белка?",["В кусты","За дерево","За ветку","В траву"],2],
+        ["Что было у Маши в рюкзаке?",["Яблоко","Книга","Мяч","Банан"],0],
+        ["Что сделала Маша в конце?",["Забрала яблоко","Положила яблоко возле дерева","Позвала белку","Ушла домой"],1]
+      ]
+    },
+    {
+      id:"L1-02",
+      title:"Новый велосипед",
+      text:"Петя давно мечтал о велосипеде. На день рождения родители подарили ему синий велосипед. Сначала Петя боялся ехать быстро. Папа помог ему научиться держать равновесие. Через несколько дней Петя уже уверенно катался во дворе.",
+      questions:[
+        ["О чём мечтал Петя?",["О самокате","О велосипеде","О роботе","О мяче"],1],
+        ["Какого цвета был велосипед?",["Красного","Зелёного","Синего","Жёлтого"],2],
+        ["Кто помог Пете?",["Мама","Друг","Брат","Папа"],3],
+        ["Чему учился Петя?",["Плавать","Держать равновесие","Бегать","Прыгать"],1],
+        ["Где Петя катался через несколько дней?",["В лесу","В школе","Во дворе","На дороге"],2]
+      ]
+    }
+  ],
+
+  2:[
+    {
+      id:"M2-01",
+      title:"Секрет старого дерева",
+      text:"Во дворе школы росло большое старое дерево. Однажды ученики заметили небольшое отверстие в его стволе. Внутри лежали сухие листья и несколько маленьких перьев. Ребята решили не трогать находку. Учитель объяснил, что дерево могло стать домом для птицы.",
+      questions:[
+        ["Где росло дерево?",["В парке","Во дворе школы","В лесу","У дома"],1],
+        ["Что заметили ученики?",["Гнездо","Отверстие в стволе","Птицу","Цветы"],1],
+        ["Что лежало внутри?",["Игрушки","Камни","Листья и перья","Ягоды"],2],
+        ["Что решили сделать ребята?",["Забрать находку","Не трогать её","Сломать ветку","Позвать птицу"],1],
+        ["Для кого дерево могло быть домом?",["Для белки","Для кошки","Для птицы","Для мыши"],2]
+      ]
+    },
+    {
+      id:"M2-02",
+      title:"После дождя",
+      text:"После сильного дождя во дворе появились большие лужи. Артём заметил, что в одной из них отражается небо. Он присел рядом и увидел маленького жука, который пытался выбраться из воды. Артём взял лист и осторожно подставил его жуку. Насекомое забралось на лист и поползло по сухой траве.",
+      questions:[
+        ["Что появилось после дождя?",["Снег","Лужи","Цветы","Песок"],1],
+        ["Что отражалось в луже?",["Дом","Дерево","Небо","Машина"],2],
+        ["Кого увидел Артём?",["Жука","Лягушку","Рыбу","Бабочку"],0],
+        ["Что использовал Артём?",["Палку","Лист","Камень","Ветку"],1],
+        ["Куда пополз жук?",["В воду","На дерево","По сухой траве","В дом"],2]
+      ]
+    }
+  ],
+
+  3:[
+    {
+      id:"H3-01",
+      title:"Почему меняются времена года",
+      text:"В течение года Земля совершает движение вокруг Солнца. При этом её ось немного наклонена. Поэтому разные части Земли получают разное количество солнечного света и тепла. Когда в одном полушарии наступает лето, в другом в это время бывает зима. Именно поэтому времена года сменяют друг друга.",
+      questions:[
+        ["Вокруг чего движется Земля?",["Луны","Солнца","Марса","Звезды"],1],
+        ["Что имеет наклон?",["Солнце","Луна","Ось Земли","Облако"],2],
+        ["Что получают части Земли?",["Снег и дождь","Свет и тепло","Только ветер","Только воду"],1],
+        ["Что может происходить одновременно?",["Лето и зима в разных полушариях","Два лета","Две зимы","Только весна"],0],
+        ["Почему меняются времена года?",["Из-за дождя","Из-за наклона оси и движения Земли","Из-за ветра","Из-за Луны"],1]
+      ]
+    },
+    {
+      id:"H3-02",
+      title:"Как пчёлы находят цветы",
+      text:"Пчёлы используют несколько способов, чтобы находить цветущие растения. Они хорошо видят определённые цвета и могут замечать узоры на лепестках. Кроме того, пчёлы чувствуют запах цветов. Найдя богатое место с нектаром, пчела возвращается в улей и помогает другим пчёлам найти дорогу к источнику пищи.",
+      questions:[
+        ["Что помогают находить пчёлам цветы?",["Только звук","Цвет и запах","Только ветер","Темнота"],1],
+        ["Что пчёлы замечают на лепестках?",["Следы","Узоры","Камни","Капли"],1],
+        ["Что ещё чувствуют пчёлы?",["Холод","Запах цветов","Шум","Дождь"],1],
+        ["Куда возвращается пчела?",["В лес","В цветок","В улей","На дерево"],2],
+        ["Что происходит после возвращения?",["Пчела забывает дорогу","Она помогает другим найти источник пищи","Она улетает одна","Она перестаёт работать"],1]
+      ]
+    }
+  ]
+
+};
+
+
+/* =========================================================
+   APP STATE
+========================================================= */
+
+let state = {
+  student:null,
+  page:"start",
+  currentText:null,
+  level:null,
+  mode:null,
+  sessionStart:null,
+  readingStart:null,
+  readingEnd:null,
+  words:[],
+  index:0,
+  timer:null,
+  speed:120,
+  answers:[],
+  currentQuestion:0,
+  lastResult:null
+};
+
+
+/* =========================================================
+   STORAGE
+========================================================= */
+
+function getStudents(){
+  return JSON.parse(localStorage.getItem("sr_students") || "[]");
+}
+
+function getSessions(){
+  return JSON.parse(localStorage.getItem("sr_sessions") || "[]");
+}
+
+function saveStudents(data){
+  localStorage.setItem("sr_students",JSON.stringify(data));
+}
+
+function saveSessions(data){
+  localStorage.setItem("sr_sessions",JSON.stringify(data));
+}
+
+function createStudent(age){
+
+  const students=getStudents();
+
+  const number=students.length+1;
+
+  const student={
+    id:"Ученик "+String(number).padStart(3,"0"),
+    age:age,
+    created:new Date().toISOString()
+  };
+
+  students.push(student);
+  saveStudents(students);
+
+  return student;
+}
+
+function getCurrentStudent(){
+  return JSON.parse(localStorage.getItem("sr_current_student") || "null");
+}
+
+function setCurrentStudent(student){
+  localStorage.setItem("sr_current_student",JSON.stringify(student));
+  state.student=student;
+}
+
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+function render(){
+
+  const app=document.getElementById("app");
+
+  switch(state.page){
+
+    case "start":
+      app.innerHTML=startPage();
+      break;
+
+    case "menu":
+      app.innerHTML=menuPage();
+      break;
+
+    case "baseline":
+      app.innerHTML=baselinePage();
+      break;
+
+    case "questions":
+      app.innerHTML=questionsPage();
+      break;
+
+    case "levels":
+      app.innerHTML=levelsPage();
+      break;
+
+    case "reader":
+      app.innerHTML=readerPage();
+      break;
+
+    case "result":
+      app.innerHTML=resultPage();
+      break;
+
+    case "results":
+      app.innerHTML=resultsPage();
+      break;
+  }
+
+  attachEvents();
+}
+
+
+/* =========================================================
+   START
+========================================================= */
+
+function startPage(){
+
+  return `
+  <section class="panel screen-page">
+    <div class="content center">
+
+      <div class="big-icon">📖</div>
+
+      <h2>Тренажер чтения</h2>
+
+      <p class="muted">
+        Тренируй скорость чтения и проверяй,
+        насколько хорошо ты понимаешь прочитанное.
+      </p>
+
+      <div class="info">
+        <strong>Сначала выбери свой возраст</strong>
+      </div>
+
+      <div class="age-buttons">
+        <button class="btn secondary ageBtn" data-age="9">9 лет</button>
+        <button class="btn secondary ageBtn" data-age="10">10 лет</button>
+        <button class="btn secondary ageBtn" data-age="other">Другое</button>
+      </div>
+
+      <div id="selectedAge"></div>
+
+      <button class="btn primary" id="continueBtn" disabled>
+        Продолжить →
+      </button>
+
+    </div>
+  </section>
+  `;
+}
+
+
+/* =========================================================
+   MENU
+========================================================= */
+
+function menuPage(){
+
+  return `
+  <section class="panel screen-page">
+    <div class="content center">
+
+      <h2>Привет, ${state.student.id}!</h2>
+
+      <p class="muted">
+        Возраст: ${state.student.age === "other" ? "другое" : state.student.age+" лет"}
+      </p>
+
+      <div class="menu">
+
+        <button class="btn primary" id="baselineBtn">
+          📊 Проверить мою скорость чтения
+        </button>
+
+        <button class="btn green" id="trainingBtn">
+          🚀 Начать тренировку
+        </button>
+
+        <button class="btn secondary" id="resultsBtn">
+          📈 Мои результаты
+        </button>
+
+      </div>
+
+    </div>
+  </section>
+  `;
+}
+
+
+/* =========================================================
+   BASELINE
+========================================================= */
+
+function baselinePage(){
+
+  return `
+  <section class="panel">
+    <div class="content">
+
+      <button class="btn secondary back" id="backMenu">
+        ← Главное меню
+      </button>
+
+      <h2>Первичный тест чтения</h2>
+
+      <div class="info">
+        Прочитай текст в своем обычном темпе.
+        Старайся не только читать быстро, но и понимать содержание.
+        Когда будешь готов, нажми «Начать».
+        Когда закончишь читать, нажми «Готово».
+        После этого ответь на пять вопросов по тексту.
+      </div>
+
+      <div class="text-box">
+        В субботу утром Дима отправился с дедушкой в лес.
+        Они хотели найти место для пикника.
+        По дороге Дима заметил маленькую тропинку,
+        которая уходила между высокими соснами.
+        Дедушка предложил пройти по ней.
+        В конце тропинки они нашли небольшую поляну,
+        рядом с которой журчал ручей.
+        Дима решил, что лучшего места для отдыха им не найти.
+      </div>
+
+      <div class="center">
+        <button class="btn primary" id="startBaseline">
+          ▶ Начать
+        </button>
+      </div>
+
+    </div>
+  </section>
+  `;
+}
+
+
+/* =========================================================
+   QUESTIONS
+========================================================= */
+
+function questionsPage(){
+
+  const data=state.currentText;
+
+  return `
+  <section class="panel">
+    <div class="content">
+
+      <h2>Вопрос ${state.currentQuestion+1} из 5</h2>
+
+      <div class="question">
+
+        <h3>${data.questions[state.currentQuestion][0]}</h3>
+
+        <div class="answers">
+
+          ${data.questions[state.currentQuestion][1].map((answer,i)=>`
+            <button
+              class="answer ${state.answers[state.currentQuestion]===i?"selected":""}"
+              data-answer="${i}">
+              ${answer}
+            </button>
+          `).join("")}
+
+        </div>
+
+      </div>
+
+      <div class="center">
+        <button
+          class="btn primary"
+          id="nextQuestion"
+          ${state.answers[state.currentQuestion]===undefined?"disabled":""}>
+          ${state.currentQuestion===4?"Показать результат":"Следующий вопрос →"}
+        </button>
+      </div>
+
+    </div>
+  </section>
+  `;
+}
+
+
+/* =========================================================
+   LEVELS
+========================================================= */
+
+function levelsPage(){
+
+  return `
+  <section class="panel screen-page">
+    <div class="content center">
+
+      <button class="btn secondary back" id="backMenu">
+        ← Главное меню
+      </button>
+
+      <h2>Выбери уровень</h2>
+
+      <p class="muted">
+        Все уровни рассчитаны на четвероклассников.
+        Тексты отличаются по сложности.
+      </p>
+
+      <div class="levels">
+
+        <button class="level" data-level="1">
+          <div style="font-size:40px">🌱</div>
+          <h3>Уровень 1</h3>
+          <p class="muted">Легче</p>
+        </button>
+
+        <button class="level" data-level="2">
+          <div style="font-size:40px">🌿</div>
+          <h3>Уровень 2</h3>
+          <p class="muted">Средний</p>
+        </button>
+
+        <button class="level" data-level="3">
+          <div style="font-size:40px">🌳</div>
+          <h3>Уровень 3</h3>
+          <p class="muted">Сложнее</p>
+        </button>
+
+      </div>
+
+    </div>
+  </section>
+  `;
+}
+
+
+/* =========================================================
+   RSVP READER
+========================================================= */
+
+function readerPage(){
+
+  const total=state.words.length;
+
+  return `
+  <section class="panel">
+
+    <div class="stats-line">
+      <span class="badge">
+        ${state.mode==="baseline" ? "Первичный тест" : "Тренировка"}
+      </span>
+
+      <span class="badge">
+        ${state.speed} слов/мин
+      </span>
+
+      <span class="badge">
+        ${state.index} / ${total}
+      </span>
+    </div>
+
+    <div class="reader-screen">
+      <div class="word" id="readerWord">
+        ${state.words[state.index] || "Готово"}
+      </div>
+    </div>
+
+    <div class="progress">
+      <div class="progress-fill" id="readerProgress"
+        style="width:${total ? (state.index/total)*100 : 0}%">
+      </div>
+    </div>
+
+    <br>
+
+    <div class="center">
+      <button class="btn danger" id="finishReading">
+        ✓ Готово
+      </button>
+
+      <button class="btn secondary" id="pauseReader">
+        ⏸ Пауза
+      </button>
+    </div>
+
+  </section>
+  `;
+}
+
+
+/* =========================================================
+   RESULT
+========================================================= */
+
+function resultPage(){
+
+  const r=state.lastResult;
+
+  return `
+  <section class="panel">
+    <div class="content result">
+
+      <div class="big-icon">
+        ${r.comprehension >= 80 ? "🎉" : "📚"}
+      </div>
+
+      <h2>
+        ${state.mode==="baseline" ? "Первичный тест завершён" : "Тренировка завершена"}
+      </h2>
+
+      <div class="result-number">
+        ${r.wpm} <small>слов/мин</small>
+      </div>
+
+      <div class="stat-grid">
+
+        <div class="stat">
+          Скорость
+          <strong>${r.wpm} WPM</strong>
+        </div>
+
+        <div class="stat">
+          Понимание
+          <strong>${r.comprehension}%</strong>
+        </div>
+
+      </div>
+
+      <div class="info">
+        Результат автоматически сохранён.
+      </div>
+
+      <button class="btn primary" id="resultContinue">
+        ${state.mode==="baseline" ? "Перейти к тренировке →" : "Вернуться в меню"}
+      </button>
+
+    </div>
+  </section>
+  `;
+}
+
+
+/* =========================================================
+   RESULTS
+========================================================= */
+
+function resultsPage(){
+
+  const sessions=getSessions()
+    .filter(s=>s.studentId===state.student.id);
+
+  const training=sessions.filter(s=>s.mode==="training");
+
+  const initial=sessions.find(s=>s.mode==="baseline");
+
+  const avg=training.length
+    ? Math.round(training.reduce((a,b)=>a+b.comprehension,0)/training.length)
+    : 0;
+
+  const current=training.length
+    ? training[training.length-1].wpm
+    : (initial ? initial.wpm : 0);
+
+  return `
+  <section class="panel">
+
+    <div class="content">
+
+      <button class="btn secondary back" id="backMenu">
+        ← Главное меню
+      </button>
+
+      <h2>Мои результаты</h2>
+
+      <div class="info">
+        <strong>${state.student.id}</strong><br>
+        Возраст: ${state.student.age}
+      </div>
+
+      <div class="stat-grid">
+
+        <div class="stat">
+          Тренировок завершено
+          <strong>${training.length}</strong>
+        </div>
+
+        <div class="stat">
+          Начальная скорость
+          <strong>${initial ? initial.wpm : "—"} WPM</strong>
+        </div>
+
+        <div class="stat">
+          Текущая скорость
+          <strong>${current} WPM</strong>
+        </div>
+
+        <div class="stat">
+          Среднее понимание
+          <strong>${avg}%</strong>
+        </div>
+
+      </div>
+
+      <div class="history">
+
+        <h3>История</h3>
+
+        ${
+          sessions.length
+          ?
+          sessions.map((s,i)=>`
+            <div class="history-row">
+              <strong>Сессия ${i+1}</strong>
+              <span>${s.wpm} слов/мин</span>
+              <span>${s.comprehension}% понимания</span>
+            </div>
+          `).join("")
+          :
+          `<p class="muted">Пока нет результатов.</p>`
+        }
+
+      </div>
+
+    </div>
+
+  </section>
+  `;
+}
+
+
+/* =========================================================
+   EVENTS
+========================================================= */
+
+function attachEvents(){
+
+  document.querySelectorAll(".ageBtn").forEach(btn=>{
+    btn.onclick=()=>{
+
+      document.querySelectorAll(".ageBtn")
+        .forEach(b=>b.classList.remove("primary"));
+
+      btn.classList.add("primary");
+
+      state.selectedAge=btn.dataset.age;
+
+      const selected=document.getElementById("selectedAge");
+
+      selected.innerHTML=
+        `<div class="info">Выбрано: <strong>${btn.dataset.age==="other"?"Другое":btn.dataset.age+" лет"}</strong></div>`;
+
+      document.getElementById("continueBtn").disabled=false;
+    };
+  });
+
+  const continueBtn=document.getElementById("continueBtn");
+
+  if(continueBtn){
+
+    continueBtn.onclick=()=>{
+
+      state.student=createStudent(state.selectedAge);
+      setCurrentStudent(state.student);
+
+      state.page="menu";
+      render();
+    };
+  }
+
+  const baselineBtn=document.getElementById("baselineBtn");
+
+  if(baselineBtn){
+    baselineBtn.onclick=()=>{
+      state.page="baseline";
+      render();
+    };
+  }
+
+  const trainingBtn=document.getElementById("trainingBtn");
+
+  if(trainingBtn){
+    trainingBtn.onclick=()=>{
+      state.page="levels";
+      render();
+    };
+  }
+
+  const resultsBtn=document.getElementById("resultsBtn");
+
+  if(resultsBtn){
+    resultsBtn.onclick=()=>{
+      state.page="results";
+      render();
+    };
+  }
+
+  const backMenu=document.getElementById("backMenu");
+
+  if(backMenu){
+    backMenu.onclick=()=>{
+      stopReader();
+      state.page="menu";
+      render();
+    };
+  }
+
+  const startBaseline=document.getElementById("startBaseline");
+
+  if(startBaseline){
+
+    startBaseline.onclick=()=>{
+
+      state.mode="baseline";
+
+      state.currentText={
+        id:"BASELINE",
+        text:`В субботу утром Дима отправился с дедушкой в лес. Они хотели найти место для пикника. По дороге Дима заметил маленькую тропинку, которая уходила между высокими соснами. Дедушка предложил пройти по ней. В конце тропинки они нашли небольшую поляну, рядом с которой журчал ручей. Дима решил, что лучшего места для отдыха им не найти.`,
+        questions:[
+          ["Куда Дима отправился утром?",["В школу","В лес","В магазин","На стадион"],1],
+          ["С кем он пошёл?",["С братом","С другом","С дедушкой","С мамой"],2],
+          ["Что заметил Дима?",["Дом","Тропинку","Озеро","Мост"],1],
+          ["Что находилось рядом с поляной?",["Река","Ручей","Дом","Дорога"],1],
+          ["Что решил Дима?",["Нужно вернуться","Лучшего места не найти","Нужно искать дальше","Нужно идти в школу"],1]
+        ]
+      };
+
+      startReader();
+    };
+  }
+
+  document.querySelectorAll(".level").forEach(btn=>{
+
+    btn.onclick=()=>{
+
+      const level=Number(btn.dataset.level);
+
+      state.level=level;
+      state.mode="training";
+
+      const list=texts[level];
+
+      /*
+        Берём следующий текст по количеству уже
+        пройденных тренировок этого уровня.
+      */
+
+      const sessions=getSessions()
+        .filter(s=>
+          s.studentId===state.student.id &&
+          s.mode==="training" &&
+          s.level===level
+        );
+
+      const text=list[sessions.length % list.length];
+
+      state.currentText=text;
+
+      startReader();
+    };
+  });
+
+  document.querySelectorAll(".answer").forEach(btn=>{
+
+    btn.onclick=()=>{
+
+      state.answers[state.currentQuestion]=Number(btn.dataset.answer);
+
+      document.querySelectorAll(".answer")
+        .forEach(b=>b.classList.remove("selected"));
+
+      btn.classList.add("selected");
+
+      document.getElementById("nextQuestion").disabled=false;
+    };
+  });
+
+  const nextQuestion=document.getElementById("nextQuestion");
+
+  if(nextQuestion){
+
+    nextQuestion.onclick=()=>{
+
+      if(state.currentQuestion<4){
+
+        state.currentQuestion++;
+        render();
+
+      }else{
+
+        finishQuestions();
+
+      }
+    };
+  }
+
+  const resultContinue=document.getElementById("resultContinue");
+
+  if(resultContinue){
+
+    resultContinue.onclick=()=>{
+
+      state.page=
+        state.mode==="baseline"
+        ? "levels"
+        : "menu";
+
+      render();
+    };
+  }
+
+  const finishReading=document.getElementById("finishReading");
+
+  if(finishReading){
+    finishReading.onclick=finishReadingManually;
+  }
+
+  const pauseReader=document.getElementById("pauseReader");
+
+  if(pauseReader){
+
+    pauseReader.onclick=()=>{
+
+      if(state.timer){
+
+        clearInterval(state.timer);
+        state.timer=null;
+        pauseReader.textContent="▶ Продолжить";
+
+      }else{
+
+        runReader();
+        pauseReader.textContent="⏸ Пауза";
+      }
+    };
+  }
+}
+
+
+/* =========================================================
+   READING
+========================================================= */
+
+function startReader(){
+
+  state.words=state.currentText.text
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
+
+  state.index=0;
+  state.answers=[];
+  state.currentQuestion=0;
+  state.sessionStart=Date.now();
+  state.readingStart=Date.now();
+
+  /*
+    Адаптивная скорость.
+    Для первой тренировки используем 120 WPM.
+  */
+
+  if(state.mode==="training"){
+    state.speed=getAdaptiveSpeed();
+  }else{
+    state.speed=120;
+  }
+
+  state.page="reader";
+  render();
+
+  runReader();
+}
+
+
+function runReader(){
+
+  if(state.timer) clearInterval(state.timer);
+
+  const delay=60000/state.speed;
+
+  state.timer=setInterval(()=>{
+
+    state.index++;
+
+    if(state.index>=state.words.length){
+
+      finishReadingManually();
+      return;
+    }
+
+    updateReader();
+
+  },delay);
+}
+
+
+function updateReader(){
+
+  const word=document.getElementById("readerWord");
+
+  const progress=document.getElementById("readerProgress");
+
+  if(word){
+    word.textContent=state.words[state.index];
+  }
+
+  if(progress){
+
+    progress.style.width=
+      `${(state.index/state.words.length)*100}%`;
+  }
+}
+
+
+function stopReader(){
+
+  if(state.timer){
+    clearInterval(state.timer);
+    state.timer=null;
+  }
+}
+
+
+function finishReadingManually(){
+
+  stopReader();
+
+  state.readingEnd=Date.now();
+
+  /*
+    Реальный WPM:
+    количество слов / время чтения в минутах.
+  */
+
+  const seconds=Math.max(
+    1,
+    (state.readingEnd-state.readingStart)/1000
+  );
+
+  const wpm=Math.round(
+    state.words.length/(seconds/60)
+  );
+
+  state.measuredWpm=Math.max(1,wpm);
+
+  state.page="questions";
+
+  render();
+}
+
+
+/* =========================================================
+   QUESTIONS / SCORING
+========================================================= */
+
+function finishQuestions(){
+
+  let correct=0;
+
+  state.currentText.questions.forEach((q,i)=>{
+
+    if(state.answers[i]===q[2]){
+      correct++;
+    }
+
+  });
+
+  const comprehension=Math.round(
+    correct/5*100
+  );
+
+  /*
+    Для результата используем измеренную скорость.
+    В тренировке также учитываем адаптивную целевую скорость.
+  */
+
+  const wpm=state.measuredWpm || state.speed;
+
+  const duration=Math.round(
+    (Date.now()-state.sessionStart)/1000
+  );
+
+  const sessionNumber=
+    getSessions()
+      .filter(s=>s.studentId===state.student.id)
+      .length+1;
+
+  const session={
+
+    studentId:state.student.id,
+    age:state.student.age,
+    date:new Date().toISOString(),
+
+    session:sessionNumber,
+
+    textId:state.currentText.id,
+
+    level:
+      state.mode==="baseline"
+      ? "baseline"
+      : state.level,
+
+    mode:state.mode,
+
+    wpm:wpm,
+
+    comprehension:comprehension,
+
+    duration:duration,
+
+    targetSpeed:state.speed
+
+  };
+
+  const sessions=getSessions();
+
+  sessions.push(session);
+
+  saveSessions(sessions);
+
+  state.lastResult=session;
+
+  state.page="result";
+
+  render();
+}
+
+
+/* =========================================================
+   ADAPTIVE SPEED
+========================================================= */
+
+function getAdaptiveSpeed(){
+
+  const sessions=getSessions()
+    .filter(s=>
+      s.studentId===state.student.id &&
+      s.mode==="training"
+    );
+
+  if(!sessions.length){
+
+    /*
+      Если есть baseline,
+      используем его скорость.
+    */
+
+    const baseline=getSessions()
+      .find(s=>
+        s.studentId===state.student.id &&
+        s.mode==="baseline"
+      );
+
+    return baseline
+      ? baseline.wpm
+      : 120;
+  }
+
+  const previous=sessions[sessions.length-1];
+
+  let speed=previous.targetSpeed || previous.wpm;
+
+  if(previous.comprehension>=80){
+
+    speed+=10;
+
+  }else if(previous.comprehension===60){
+
+    /* скорость остаётся */
+
+  }else if(previous.comprehension<=40){
+
+    speed-=10;
+  }
+
+  return Math.max(60,Math.min(300,speed));
+}
+
+
+/* =========================================================
+   START
+========================================================= */
+
+const existing=getCurrentStudent();
+
+if(existing){
+
+  state.student=existing;
+
+  /*
+    Для удобства тестирования существующего ученика
+    открываем главное меню.
+  */
+
+  state.page="menu";
+
+}else{
+
+  state.page="start";
+}
+
+render();
+
+</script>
+
+</body>
+</html>
+
